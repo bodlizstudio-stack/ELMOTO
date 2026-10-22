@@ -15,5 +15,6 @@ public/uploads/*
 !public/uploads/.gitkeep
 prisma/*.db
 prisma/*.db-journal
+!prisma/catalog.db
 playwright-report
 test-results
