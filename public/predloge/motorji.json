@@ -1,0 +1,19 @@
+{
+  "instructions": "V polje motorcycles dodajte samo preverjene motorje. Zapisi z example: true se ne uvozijo. priceEur 0 se ne prikaže kot cena. imageUrls so https povezave ali poti /uploads/.",
+  "motorcycles": [
+    {
+      "example": true,
+      "brand": "PRIMER",
+      "model": "NE UVOZI",
+      "year": 2024,
+      "priceEur": 0,
+      "priceConfirmed": false,
+      "condition": "USED",
+      "status": "HIDDEN",
+      "forSale": true,
+      "forRent": false,
+      "description": "Ta zapis je samo vzorec in se ne uvozi.",
+      "imageUrls": []
+    }
+  ]
+}

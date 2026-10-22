@@ -1,0 +1,192 @@
+.elmoto-ride {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  overflow: hidden;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.elmoto-ride[data-phase="exiting"],
+.elmoto-ride[data-phase="covered"],
+.elmoto-ride[data-phase="returning"],
+.elmoto-ride[data-phase="entering"] {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.elmoto-ride-cover,
+.elmoto-ride-wisps,
+.elmoto-ride-puffs,
+.elmoto-ride-logo {
+  position: absolute;
+  inset: 0;
+}
+
+.elmoto-ride-cover {
+  background:
+    radial-gradient(80% 60% at 50% 48%, rgba(48, 58, 72, 0.45), transparent 62%),
+    #0b0d10;
+  opacity: 0;
+}
+
+.elmoto-ride[data-phase="exiting"] .elmoto-ride-cover {
+  animation: cover-in 500ms linear forwards;
+}
+
+.elmoto-ride[data-phase="covered"] .elmoto-ride-cover,
+.elmoto-ride[data-phase="returning"] .elmoto-ride-cover {
+  opacity: 1;
+}
+
+.elmoto-ride[data-phase="entering"] .elmoto-ride-cover {
+  animation: cover-out 400ms ease forwards;
+}
+
+.elmoto-ride-wisp {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(198, 208, 218, 0.5), rgba(90, 104, 120, 0.18) 42%, transparent 70%);
+  filter: blur(14px);
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+
+.elmoto-ride[data-phase="exiting"] .elmoto-ride-wisp,
+.elmoto-ride[data-phase="returning"] .elmoto-ride-wisp {
+  animation: wisp-in 520ms ease-out forwards;
+  animation-delay: var(--d);
+}
+
+.elmoto-ride[data-phase="covered"] .elmoto-ride-wisp {
+  opacity: 0.4;
+}
+
+.elmoto-ride[data-phase="entering"] .elmoto-ride-wisp {
+  animation: wisp-out 400ms ease forwards;
+}
+
+.elmoto-ride-wisp:nth-child(1) { left: -10%; top: 8%; width: 48vw; height: 48vw; --d: 0ms; }
+.elmoto-ride-wisp:nth-child(2) { left: 22%; top: 36%; width: 40vw; height: 40vw; --d: 40ms; }
+.elmoto-ride-wisp:nth-child(3) { left: 48%; top: 12%; width: 44vw; height: 44vw; --d: 80ms; }
+.elmoto-ride-wisp:nth-child(4) { left: 68%; top: 42%; width: 38vw; height: 38vw; --d: 120ms; }
+.elmoto-ride-wisp:nth-child(5) { left: 6%; top: 52%; width: 32vw; height: 32vw; --d: 60ms; }
+.elmoto-ride-wisp:nth-child(6) { left: 36%; top: 4%; width: 28vw; height: 28vw; --d: 140ms; }
+
+.elmoto-ride-puffs {
+  z-index: 2;
+  pointer-events: none;
+}
+
+.elmoto-ride-puff {
+  position: absolute;
+  width: 24vw;
+  height: 24vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(220, 226, 232, 0.55), rgba(120, 132, 146, 0.16) 48%, transparent 72%);
+  filter: blur(10px);
+  opacity: 0;
+}
+
+.elmoto-ride[data-phase="exiting"] .elmoto-ride-puff,
+.elmoto-ride[data-phase="returning"] .elmoto-ride-puff {
+  animation: puff 560ms ease-out forwards;
+  animation-delay: var(--d);
+}
+
+.elmoto-ride[data-phase="covered"] .elmoto-ride-puff {
+  opacity: 0.28;
+}
+
+.elmoto-ride[data-phase="entering"] .elmoto-ride-puff {
+  animation: puff-out 400ms ease forwards;
+}
+
+.elmoto-ride-puff:nth-child(1) { left: 18%; top: 32%; --s: 1.8; --d: 0ms; }
+.elmoto-ride-puff:nth-child(2) { left: 42%; top: 46%; --s: 2.2; --d: 40ms; }
+.elmoto-ride-puff:nth-child(3) { left: 62%; top: 28%; --s: 1.7; --d: 20ms; }
+.elmoto-ride-puff:nth-child(4) { left: 74%; top: 54%; --s: 2.4; --d: 70ms; }
+.elmoto-ride-puff:nth-child(5) { left: 28%; top: 62%; --s: 2; --d: 50ms; }
+.elmoto-ride-puff:nth-child(6) { left: 50%; top: 22%; --s: 1.6; --d: 10ms; }
+.elmoto-ride-puff:nth-child(7) { left: 8%; top: 48%; --s: 2.3; --d: 90ms; }
+.elmoto-ride-puff:nth-child(8) { left: 84%; top: 38%; --s: 1.9; --d: 60ms; }
+
+.elmoto-ride-logo {
+  inset: auto;
+  left: 50%;
+  top: 50%;
+  z-index: 4;
+  width: min(760px, 88vw);
+  height: auto;
+  max-width: none;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.45));
+}
+
+.elmoto-ride[data-phase="exiting"] .elmoto-ride-logo,
+.elmoto-ride[data-phase="returning"] .elmoto-ride-logo {
+  animation: logo-in 500ms ease forwards;
+}
+
+.elmoto-ride[data-phase="covered"] .elmoto-ride-logo {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+.elmoto-ride[data-phase="entering"] .elmoto-ride-logo {
+  animation: logo-out 400ms ease forwards;
+}
+
+@keyframes cover-in {
+  0%, 12% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes cover-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes puff {
+  0% { opacity: 0; transform: scale(0.25); }
+  28% { opacity: 0.72; }
+  100% { opacity: 0.34; transform: scale(var(--s)); }
+}
+
+@keyframes puff-out {
+  from { opacity: 0.34; transform: scale(var(--s)); }
+  to { opacity: 0; transform: scale(calc(var(--s) * 1.25)); }
+}
+
+@keyframes wisp-in {
+  0% { opacity: 0; transform: scale(0.4); }
+  40% { opacity: 0.6; }
+  100% { opacity: 0.36; transform: scale(1.12); }
+}
+
+@keyframes wisp-out {
+  from { opacity: 0.36; transform: scale(1.12); }
+  to { opacity: 0; transform: scale(1.4) translateY(-4%); }
+}
+
+@keyframes logo-in {
+  0%, 22% { opacity: 0; transform: translate(-50%, -50%) scale(0.96); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes logo-out {
+  from { opacity: 1; transform: translate(-50%, -50%); }
+  to { opacity: 0; transform: translate(-50%, -54%) scale(1.03); }
+}
+
+@media (max-width: 700px) {
+  .elmoto-ride-wisp { filter: blur(8px); }
+  .elmoto-ride-wisp:nth-child(n + 5),
+  .elmoto-ride-puff:nth-child(n + 6) { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .elmoto-ride { display: none !important; }
+}

@@ -1,0 +1,2 @@
+brand,model,variant,year,mileageKm,engineCc,powerKw,powerHp,engineType,transmission,driveType,color,licenseCategory,category,condition,status,forSale,forRent,priceEur,priceConfirmed,description,equipment,serviceHistory,source,sourceCheckedAt,imageUrls,featured,seoTitle,seoDescription,specs
+# Vrstice, ki se začnejo z #, se preskočijo. Cena 0 ni prava cena. Fotografije ločite z |.

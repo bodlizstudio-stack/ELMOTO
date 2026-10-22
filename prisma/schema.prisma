@@ -1,0 +1,280 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  name         String
+  passwordHash String
+  role         String     @default("ADMIN")
+  createdAt    DateTime   @default(now())
+  auditLogs    AuditLog[]
+}
+
+model Brand {
+  id   String @id @default(cuid())
+  name String @unique
+  slug String @unique
+}
+
+model MotorcycleCategory {
+  id   String @id @default(cuid())
+  name String @unique
+  slug String @unique
+}
+
+model Motorcycle {
+  id              String                     @id @default(cuid())
+  slug            String                     @unique
+  brand           String
+  model           String
+  variant         String                     @default("")
+  year            Int
+  mileageKm       Int?
+  engineCc        Int?
+  powerKw         Float?
+  powerHp         Float?
+  engineType      String                     @default("")
+  transmission    String                     @default("")
+  driveType       String                     @default("")
+  color           String                     @default("")
+  licenseCategory String                     @default("")
+  category        String                     @default("")
+  condition       String                     @default("USED")
+  status          String                     @default("AVAILABLE")
+  forSale         Boolean                    @default(true)
+  forRent         Boolean                    @default(false)
+  priceCents      Int?
+  priceConfirmed  Boolean                    @default(false)
+  description     String                     @default("")
+  equipment       String                     @default("")
+  serviceHistory  String                     @default("")
+  featured        Boolean                    @default(false)
+  featuredOrder   Int                        @default(0)
+  seoTitle        String                     @default("")
+  seoDescription  String                     @default("")
+  source          String                     @default("")
+  sourceCheckedAt DateTime?
+  publishedAt     DateTime                   @default(now())
+  createdAt       DateTime                   @default(now())
+  updatedAt       DateTime                   @updatedAt
+  images          MotorcycleImage[]
+  specifications  MotorcycleSpecification[]
+  rentalRates     RentalRate[]
+  rentalBlocks    RentalBlock[]
+  bookings        RentalBooking[]
+  inquiries       Inquiry[]
+
+  @@index([status, forSale])
+  @@index([forRent, status])
+  @@index([brand])
+  @@index([category])
+  @@index([featured])
+  @@index([publishedAt])
+}
+
+model MotorcycleImage {
+  id           String     @id @default(cuid())
+  motorcycleId String
+  motorcycle   Motorcycle @relation(fields: [motorcycleId], references: [id], onDelete: Cascade)
+  url          String
+  alt          String     @default("")
+  sortOrder    Int        @default(0)
+  isCover      Boolean    @default(false)
+
+  @@index([motorcycleId, sortOrder])
+}
+
+model MotorcycleSpecification {
+  id           String     @id @default(cuid())
+  motorcycleId String
+  motorcycle   Motorcycle @relation(fields: [motorcycleId], references: [id], onDelete: Cascade)
+  label        String
+  value        String
+
+  @@index([motorcycleId])
+}
+
+model RentalRate {
+  id            String     @id @default(cuid())
+  motorcycleId  String
+  motorcycle    Motorcycle @relation(fields: [motorcycleId], references: [id], onDelete: Cascade)
+  label         String     @default("Osnovni cenik")
+  dailyCents    Int?
+  weekendCents  Int?
+  multidayCents Int?
+  seasonStart   String     @default("")
+  seasonEnd     String     @default("")
+  kmLimitPerDay Int?
+  extraKmCents  Int?
+  depositCents  Int?
+  extrasNote    String     @default("")
+  confirmed     Boolean    @default(false)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([motorcycleId])
+}
+
+model RentalBlock {
+  id           String     @id @default(cuid())
+  motorcycleId String
+  motorcycle   Motorcycle @relation(fields: [motorcycleId], references: [id], onDelete: Cascade)
+  startAt      DateTime
+  endAt        DateTime
+  reason       String     @default("")
+  createdAt    DateTime   @default(now())
+
+  @@index([motorcycleId, startAt])
+}
+
+model RentalBooking {
+  id              String         @id @default(cuid())
+  motorcycleId    String
+  motorcycle      Motorcycle     @relation(fields: [motorcycleId], references: [id], onDelete: Cascade)
+  name            String
+  email           String
+  phone           String
+  licenseCategory String
+  message         String         @default("")
+  pickupAt        DateTime
+  returnAt        DateTime
+  days            Int
+  quotedCents     Int?
+  status          String         @default("NEW")
+  internalNotes   String         @default("")
+  termsAccepted   Boolean        @default(false)
+  privacyAccepted Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  events          BookingEvent[]
+
+  @@index([motorcycleId, status])
+  @@index([status, pickupAt])
+}
+
+model BookingEvent {
+  id        String        @id @default(cuid())
+  bookingId String
+  booking   RentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  action    String
+  note      String        @default("")
+  createdAt DateTime      @default(now())
+
+  @@index([bookingId])
+}
+
+model Inquiry {
+  id              String         @id @default(cuid())
+  kind            String         @default("CONTACT")
+  type            String
+  name            String
+  email           String
+  phone           String         @default("")
+  motorcycleId    String?
+  motorcycle      Motorcycle?    @relation(fields: [motorcycleId], references: [id], onDelete: SetNull)
+  message         String
+  status          String         @default("NEW")
+  internalNotes   String         @default("")
+  privacyAccepted Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  events          InquiryEvent[]
+
+  @@index([status, createdAt])
+  @@index([type])
+}
+
+model InquiryEvent {
+  id        String   @id @default(cuid())
+  inquiryId String
+  inquiry   Inquiry  @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  action    String
+  note      String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([inquiryId])
+}
+
+model FaqItem {
+  id        String  @id @default(cuid())
+  category  String
+  question  String
+  answer    String
+  sortOrder Int     @default(0)
+  published Boolean @default(true)
+
+  @@index([category, sortOrder])
+}
+
+model Testimonial {
+  id         String   @id @default(cuid())
+  authorName String
+  text       String
+  rating     Int?
+  source     String   @default("")
+  published  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model SiteSetting {
+  key   String @id
+  value String
+}
+
+model Page {
+  slug           String   @id
+  title          String
+  body           String
+  seoTitle       String   @default("")
+  seoDescription String   @default("")
+  confirmed      Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+}
+
+model MediaAsset {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String   @default("")
+  kind      String   @default("gallery")
+  linkUrl   String   @default("")
+  sortOrder Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([kind, sortOrder])
+}
+
+model ImportJob {
+  id        String   @id @default(cuid())
+  filename  String
+  status    String
+  summary   String   @default("")
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  entity    String
+  entityId  String   @default("")
+  detail    String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  consent   Boolean
+  createdAt DateTime @default(now())
+}
